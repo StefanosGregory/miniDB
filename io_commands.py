@@ -64,11 +64,16 @@ def enalax(cmdlist):
 
 def main(global_db):
     cmd = input(">>> ")
-    parentheses = re.split('[()]', cmd)
-    parentheses = list(filter(None, parentheses))
-    cmdlist = parentheses[0]
-    cmdlist = cmdlist.split(' ')
-    cmdlist = list(filter(None, cmdlist))
+    cmdlist, parentheses = [], []
+    try:
+        parentheses = re.split('[()]', cmd)
+        parentheses = list(filter(None, parentheses))
+        cmdlist = parentheses[0]
+        cmdlist = cmdlist.split(' ')
+        cmdlist = list(filter(None, cmdlist))
+    except:
+        print("Error check your command line..")
+        main(global_db)
 
     # <-------- SELECT SECTION -------->
     if cmdlist[0].upper() == "SELECT":
@@ -86,7 +91,6 @@ def main(global_db):
                         top_k = find(cmdlist, 'TOP', 2)[1]
                         order_by = find(cmdlist, 'ORDER', 2)[1]
                         asc = ascs(cmdlist)
-                        print(table1, table2, condition, condition2, order_by, asc, top_k)
                         global_db.inner_join(table1, table2, condition)._select_where('*', condition2, order_by, asc,
                                                                                       top_k)
                     else:
@@ -109,9 +113,12 @@ def main(global_db):
                     asc = ascs(cmdlist)
 
                     try:
-                        global_db.inner_join(table1, table2, condition1, return_object=True)._select_where(columns, condition2, order_by, asc, top_k)
+                        global_db.inner_join(table1, table2, condition1, return_object=True)._select_where(columns,
+                                                                                                           condition2,
+                                                                                                           order_by,
+                                                                                                           asc, top_k)
                     except:
-                        print("error")
+                        print("Error check your command line..")
 
             else:
                 if cmdlist[1].upper() == "TOP":
@@ -147,13 +154,12 @@ def main(global_db):
                     dbname = tmp[1]
                     global_db = Database(dbname, load=True)
                 global_db.unlock_table(table_name)
-                print(table_name, columns, condition, order_by, asc, top_k, save_as)
                 global_db.select(table_name, columns, condition, order_by, asc, top_k, save_as)
                 if not save_as is None:
                     print('Saved..loading \n')
                     global_db.select(save_as, '*')
         except:
-            print('Error not correct type of command... I am so sorry ')
+            print("Error check your command line..")
         main(global_db)
 
     # <-------- UPDATE SECTION -------->
@@ -220,12 +226,10 @@ def main(global_db):
                 primary_key = None
                 if 'pk' in par_content:
                     tmp = find(par_content, 'PK', 1)
-                    print(tmp)
                     primary_key = find(par_content, 'PK', -2)[1]
                     par_content.pop(tmp[0])
                 column_names = []
                 column_types = []
-                print(par_content)
                 for e in par_content:
                     column_names.append(e)
                     column_names, column_types = column_types, column_names
@@ -242,7 +246,6 @@ def main(global_db):
                     elif column_types[i] == 'int':
                         column_types[i] = int
 
-                print(table_name, column_names, column_types, primary_key)
                 global_db.create_table(table_name, column_names, column_types, primary_key)
             except IndexError:
                 print("Error check your command line..")
