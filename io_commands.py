@@ -283,13 +283,16 @@ def main(global_db):
                 print(table_name + " droped successfully..")
             except:
                 print("Error check your command line..")
-        elif cmdlist[1].upper() == "INDEX":
-            tmp = dot(cmdlist, 3)
-            indexname = tmp[0]
-            if tmp[1] is not None:
-                dbname = tmp[1]
-                global_db = Database(dbname, load=True)
-            global_db.drop_index(indexname)
+
+                '''For future index add'''
+        # elif cmdlist[1].upper() == "INDEX":
+        #     tmp = dot(cmdlist, 3)
+        #     indexname = tmp[0]
+        #     if tmp[1] is not None:
+        #         dbname = tmp[1]
+        #         global_db = Database(dbname, load=True)
+        #     global_db.drop_index(indexname)
+
         else:
             print("Error check your command line..")
         main(global_db)
