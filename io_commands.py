@@ -274,7 +274,7 @@ def main(global_db):
                         column_types[i] = int
 
                 global_db.create_table(table_name, column_names, column_types, primary_key)
-            except IndexError:
+            except:
                 print("Error check your command line..")
         elif cmdlist[1].upper() == "INDEX":
             tmp = dot(cmdlist, 5)
