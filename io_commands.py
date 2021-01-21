@@ -5,6 +5,9 @@ global_db = None
 
 
 def ascs(cmdlist):
+    """
+        ascs method returns True of False if we want to sort it with ascending order or descending order.
+    """
     asc = None
     try:
         if next(i for i, v in enumerate(cmdlist) if v.upper() == "ASC"):
@@ -17,6 +20,9 @@ def ascs(cmdlist):
 
 
 def fun(var):
+    """
+        fun method returns the alternately for the use of SET WHERE SQL command.
+    """
     l1 = ','
     l2 = '='
     if var in l1 or var in l2:
@@ -26,11 +32,20 @@ def fun(var):
 
 
 def connect(dbnane):
+    """
+        connect method is responsible to create connection with the database.
+    """
     global_db = Database(dbnane, load=True)
     main(global_db)
 
 
 def dot(cmdlist, index):
+    """
+        dot method is responsible to recognise if there is a '.' in the SQL command.
+        If there is a '.' in the command, it splits it into database name and the column name.
+        If there is not a '.' in the command, it just gets the table name's name.
+        Method returns table_name and database_name.
+    """
     if '.' in cmdlist[index - 1]:
         tmp = cmdlist[index - 1].split('.')
         dbname = tmp[0]
@@ -42,6 +57,10 @@ def dot(cmdlist, index):
 
 
 def find(cmdlist, lookingfor, num):
+    """
+        find method is responsible to find the specific command in the command list.
+        Command list the SQL command that user enter and then later gets split by various ways to get the database name ( if needed ),  table name, columns of the table, special characters ( WHERE, SET, etc. ).
+    """
     index, tmp = 0, None
     try:
         index = next(i for i, v in enumerate(cmdlist) if v.upper() == lookingfor)
@@ -52,6 +71,10 @@ def find(cmdlist, lookingfor, num):
 
 
 def enalax(cmdlist):
+    """
+        enalax method is used to find the columns names and values that are between SET and WHERE.
+        It returns columns names and values.
+    """
     tmp = cmdlist[cmdlist.index('set') + 1:cmdlist.index('where')]
     tmp = list(filter(fun, tmp))
     columns_names = []
@@ -63,6 +86,10 @@ def enalax(cmdlist):
 
 
 def main(global_db):
+    """
+        main method is the whole program. Here the input of the user is collected and prints in the terminal window the results of that input.
+        Results can be from a SELECT command, CREATE command, even errors from those commands that user might have done will tryping the command.
+    """
     cmd = input(">>> ")
     cmdlist, parentheses = [], []
     try:
@@ -280,11 +307,15 @@ def main(global_db):
                 global_db = Database(dbname, load=True)
             try:
                 global_db.drop_table(table_name)
-                print(table_name + " droped successfully..")
+                print(table_name + " dropped successfully..")
             except:
                 print("Error check your command line..")
 
-                '''For future index add'''
+                """
+                    For future index add.
+                    No drop index method yet created. 
+                    Once the method is implemented just uncomment the code below.  
+                """
         # elif cmdlist[1].upper() == "INDEX":
         #     tmp = dot(cmdlist, 3)
         #     indexname = tmp[0]
@@ -305,9 +336,11 @@ def main(global_db):
     elif cmdlist[0].upper() == "EXIT()" or cmdlist[0].upper() == "EXIT" or cmdlist[0].upper() == "CLOSE":
         print('Exit MiniDB..')
 
+    # <-------- UNKNOWN TYPE OF COMMAND ------->
     else:
-        print("Non correct type of command..")
+        print("Error. Unknown command..")
         main(global_db)
 
 
+print("Welcome to miniDB")
 main(global_db)
